@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 final lightTheme = ThemeData(
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.lightBlueAccent,
+      iconTheme: IconThemeData(
+        color: Colors.white,
+      ),
       elevation: 1,
       titleTextStyle: TextStyle(
         color: Colors.white,
