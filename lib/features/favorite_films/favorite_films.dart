@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:film_gallery/injection/injection.dart';
 import 'package:film_gallery/services/favorite_films_service.dart';
 import 'package:film_gallery/shared/models/film_preview_data/film_preview_data.dart';
 import 'package:film_gallery/uikit/film-card/film_card.dart';
+import 'package:film_gallery/uikit/film_list_shimmer/film_list_shimmer.dart';
 
 class FavoriteFilmsScreen extends StatefulWidget {
   const FavoriteFilmsScreen({super.key});
@@ -43,6 +47,10 @@ class _FavoriteFilmsScreenState extends State<FavoriteFilmsScreen> {
     }
   }
 
+  void openFilmDetails(int filmId) {
+    context.push('favorite/${filmId}');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -50,18 +58,9 @@ class _FavoriteFilmsScreenState extends State<FavoriteFilmsScreen> {
     _loadFavoriteFilms();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _loadFavoriteFilms();
-  }
-
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return FilmGridSkeleton();
     }
 
     if (_errorMessage != null) {
@@ -107,7 +106,7 @@ class _FavoriteFilmsScreenState extends State<FavoriteFilmsScreen> {
         childAspectRatio: 0.78,
         children: [
           for (var film in _films)
-            FilmCard(film: film)
+            FilmCard(film: film, onTap: openFilmDetails)
         ],
       ),
     );
@@ -120,11 +119,22 @@ class _FavoriteFilmsScreenState extends State<FavoriteFilmsScreen> {
         title: Text('Favorite films'),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      body: RefreshIndicator(
-          child: _buildBody(),
-          onRefresh: () async {
-            _loadFavoriteFilms();
-          }
+      body: StreamBuilder<void>(
+        stream: favoriteFilmsApi.onFavoritesChanged$,
+        builder: (context, snapshot) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_isLoading) {
+              _loadFavoriteFilms();
+            }
+          });
+
+          return RefreshIndicator(
+            child: _buildBody(),
+            onRefresh: () async {
+              _loadFavoriteFilms();
+            },
+          );
+        },
       ),
     );
   }

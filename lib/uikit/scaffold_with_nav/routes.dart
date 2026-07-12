@@ -10,35 +10,62 @@ import 'package:film_gallery/uikit/scaffold_with_nav/scaffold_with_nav.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/popular',
   routes: [
-    ShellRoute(
-      builder: (context, state, child) {
-         return ScaffoldWithNav(child: child);
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return ScaffoldWithNav(navigationShell: navigationShell);
       },
-      routes: [
-        GoRoute(
-          path: '/popular',
-          builder: (context, state) => PopularFilmsScreen(),
+      branches: [
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path: ':id',
-              builder: (context, state) {
-                final filmId = state.pathParameters['id'];
-                return FilmDetailsScreen(filmId: int.parse(filmId!));
-              },
+              path: '/popular',
+              builder: (context, state) => const PopularFilmsScreen(),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                    builder: (context, state) {
+                    final filmId = state.pathParameters['id'];
+
+                    return FilmDetailsScreen(filmId: int.parse(filmId!));
+                  },
+                )
+              ]
             ),
           ],
         ),
-        GoRoute(
-          path: '/favorite',
-          builder: (context, state) => const FavoriteFilmsScreen(),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/favorite',
+              builder: (context, state) => const FavoriteFilmsScreen(),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  builder: (context, state) {
+                    final filmId = state.pathParameters['id'];
+
+                    return FilmDetailsScreen(filmId: int.parse(filmId!));
+                  },
+                )
+              ]
+            ),
+          ],
         ),
-        GoRoute(
-          path: '/search',
-          builder: (context, state) => const SearchFilmsScreen(),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/search',
+              builder: (context, state) => const SearchFilmsScreen(),
+            ),
+          ],
         ),
-        GoRoute(
-          path: '/settings',
-          builder: (context, state) => const GlobalSettingsScreen(),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => const GlobalSettingsScreen(),
+            ),
+          ],
         ),
       ],
     ),

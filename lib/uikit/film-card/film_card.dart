@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:film_gallery/shared/models/film_preview_data/film_preview_data.dart';
 
 class FilmCard extends StatelessWidget {
-  const FilmCard({super.key, required this.film});
+  const FilmCard({
+    super.key,
+    required this.film,
+    required this.onTap,
+  });
 
   final FilmPreviewData film;
+  final void Function(int filmId) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,7 @@ class FilmCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        context.push('popular/${film.kinopoiskId}');
+        onTap(film.kinopoiskId);
       },
     );
 

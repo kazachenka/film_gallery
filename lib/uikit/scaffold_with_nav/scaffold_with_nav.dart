@@ -2,44 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ScaffoldWithNav extends StatelessWidget {
-  const ScaffoldWithNav({required this.child, super.key});
+  const ScaffoldWithNav({required this.navigationShell, super.key});
 
-  final Widget child;
-
-  int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.path;
-    if (location.startsWith('/popular')) return 0;
-    if (location.startsWith('/favorite')) return 1;
-    if (location.startsWith('/search')) return 2;
-    if (location.startsWith('/settings')) return 3;
-
-    return 0;
-  }
-
-  void _onItemTapped(int index, BuildContext context) {
-    switch (index) {
-      case 0:
-        context.go('/popular');
-        break;
-      case 1:
-        context.go('/favorite');
-        break;
-      case 2:
-        context.go('/search');
-        break;
-      case 3:
-        context.go('/settings');
-        break;
-    }
-  }
+  final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
+      body: navigationShell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _calculateSelectedIndex(context),
-        onDestinationSelected: (int index) => _onItemTapped(index, context),
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (int index) {
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
+        },
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.movie_outlined),

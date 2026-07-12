@@ -124,14 +124,10 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
           Image.network(
             _filmData.posterUrl,
             width: double.infinity,
-            height: 300,
-            fit: BoxFit.fill,
             errorBuilder: (context, error, stackTrace) {
               return Image.asset(
                 'assets/images/film.jpg',
                 width: double.infinity,
-                height: 400,
-                fit: BoxFit.fill,
               );
             },
           ),
@@ -220,7 +216,6 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Film name'),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: _buildBody(),

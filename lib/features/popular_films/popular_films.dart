@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:film_gallery/injection/injection.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:film_gallery/injection/injection.dart';
 import 'package:film_gallery/shared/models/film_preview_data/film_preview_data.dart';
 import 'package:film_gallery/shared/models/films_data/films_data.dart';
 import 'package:film_gallery/uikit/film-card/film_card.dart';
+import 'package:film_gallery/uikit/film_list_shimmer/film_list_shimmer.dart';
 import 'api/popular_films_api.dart';
 
 class PopularFilmsScreen extends StatefulWidget {
@@ -51,11 +53,13 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
     _loadPopularFilms();
   }
 
+  void openFilmDetails(int filmId) {
+    context.push('popular/${filmId}');
+  }
+
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return FilmGridSkeleton();
     }
 
     if (_errorMessage != null) {
@@ -101,7 +105,7 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
         childAspectRatio: 0.78,
         children: [
           for (var film in _films)
-            FilmCard(film: film)
+            FilmCard(film: film, onTap: openFilmDetails)
         ],
       ),
     );

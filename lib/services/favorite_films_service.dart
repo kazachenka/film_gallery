@@ -1,9 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:film_gallery/shared/models/film_preview_data/film_preview_data.dart';
 
 class FavoriteFilmsService {
   static const String _storageKey = 'favorite_films_list';
+
+  final StreamController<void> _updateController = StreamController<void>.broadcast();
+
+  Stream<void> get onFavoritesChanged$ => _updateController.stream;
 
   Future<List<FilmPreviewData>> getFavorites() async {
     final prefs = await SharedPreferences.getInstance();
@@ -28,6 +33,8 @@ class FavoriteFilmsService {
     currentFavorites.add(film);
 
     await _saveList(prefs, currentFavorites);
+
+    _updateController.add(null);
   }
 
   Future<void> removeFromFavorites(int kinopoiskId) async {
@@ -37,6 +44,8 @@ class FavoriteFilmsService {
     currentFavorites.removeWhere((f) => f.kinopoiskId == kinopoiskId);
 
     await _saveList(prefs, currentFavorites);
+
+    _updateController.add(null);
   }
 
   Future<bool> isInFavorites(int kinopoiskId) async {
@@ -51,5 +60,9 @@ class FavoriteFilmsService {
     }).toList();
 
     await prefs.setStringList(_storageKey, stringList);
+  }
+
+  void dispose() {
+    _updateController.close();
   }
 }
