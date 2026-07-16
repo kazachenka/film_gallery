@@ -52,7 +52,7 @@ class FilmCard extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '${film.ratingKinopoisk}',
+                            film.ratingKinopoisk != null ? '${film.ratingKinopoisk}' : ' - ',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
                           ),
                         ),

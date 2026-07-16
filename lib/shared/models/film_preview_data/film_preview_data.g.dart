@@ -11,7 +11,7 @@ _FilmPreviewData _$FilmPreviewDataFromJson(Map<String, dynamic> json) =>
       kinopoiskId: (json['kinopoiskId'] as num).toInt(),
       nameRu: json['nameRu'] as String?,
       posterUrl: json['posterUrl'] as String,
-      ratingKinopoisk: (json['ratingKinopoisk'] as num).toDouble(),
+      ratingKinopoisk: (json['ratingKinopoisk'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$FilmPreviewDataToJson(_FilmPreviewData instance) =>

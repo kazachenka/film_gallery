@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FilmPreviewData {
 
- int get kinopoiskId; String? get nameRu; String get posterUrl; double get ratingKinopoisk;
+ int get kinopoiskId; String? get nameRu; String get posterUrl; double? get ratingKinopoisk;
 /// Create a copy of FilmPreviewData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $FilmPreviewDataCopyWith<$Res>  {
   factory $FilmPreviewDataCopyWith(FilmPreviewData value, $Res Function(FilmPreviewData) _then) = _$FilmPreviewDataCopyWithImpl;
 @useResult
 $Res call({
- int kinopoiskId, String? nameRu, String posterUrl, double ratingKinopoisk
+ int kinopoiskId, String? nameRu, String posterUrl, double? ratingKinopoisk
 });
 
 
@@ -65,13 +65,13 @@ class _$FilmPreviewDataCopyWithImpl<$Res>
 
 /// Create a copy of FilmPreviewData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? kinopoiskId = null,Object? nameRu = freezed,Object? posterUrl = null,Object? ratingKinopoisk = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? kinopoiskId = null,Object? nameRu = freezed,Object? posterUrl = null,Object? ratingKinopoisk = freezed,}) {
   return _then(_self.copyWith(
 kinopoiskId: null == kinopoiskId ? _self.kinopoiskId : kinopoiskId // ignore: cast_nullable_to_non_nullable
 as int,nameRu: freezed == nameRu ? _self.nameRu : nameRu // ignore: cast_nullable_to_non_nullable
 as String?,posterUrl: null == posterUrl ? _self.posterUrl : posterUrl // ignore: cast_nullable_to_non_nullable
-as String,ratingKinopoisk: null == ratingKinopoisk ? _self.ratingKinopoisk : ratingKinopoisk // ignore: cast_nullable_to_non_nullable
-as double,
+as String,ratingKinopoisk: freezed == ratingKinopoisk ? _self.ratingKinopoisk : ratingKinopoisk // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int kinopoiskId,  String? nameRu,  String posterUrl,  double ratingKinopoisk)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int kinopoiskId,  String? nameRu,  String posterUrl,  double? ratingKinopoisk)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FilmPreviewData() when $default != null:
 return $default(_that.kinopoiskId,_that.nameRu,_that.posterUrl,_that.ratingKinopoisk);case _:
@@ -177,7 +177,7 @@ return $default(_that.kinopoiskId,_that.nameRu,_that.posterUrl,_that.ratingKinop
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int kinopoiskId,  String? nameRu,  String posterUrl,  double ratingKinopoisk)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int kinopoiskId,  String? nameRu,  String posterUrl,  double? ratingKinopoisk)  $default,) {final _that = this;
 switch (_that) {
 case _FilmPreviewData():
 return $default(_that.kinopoiskId,_that.nameRu,_that.posterUrl,_that.ratingKinopoisk);case _:
@@ -197,7 +197,7 @@ return $default(_that.kinopoiskId,_that.nameRu,_that.posterUrl,_that.ratingKinop
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int kinopoiskId,  String? nameRu,  String posterUrl,  double ratingKinopoisk)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int kinopoiskId,  String? nameRu,  String posterUrl,  double? ratingKinopoisk)?  $default,) {final _that = this;
 switch (_that) {
 case _FilmPreviewData() when $default != null:
 return $default(_that.kinopoiskId,_that.nameRu,_that.posterUrl,_that.ratingKinopoisk);case _:
@@ -218,7 +218,7 @@ class _FilmPreviewData implements FilmPreviewData {
 @override final  int kinopoiskId;
 @override final  String? nameRu;
 @override final  String posterUrl;
-@override final  double ratingKinopoisk;
+@override final  double? ratingKinopoisk;
 
 /// Create a copy of FilmPreviewData
 /// with the given fields replaced by the non-null parameter values.
@@ -253,7 +253,7 @@ abstract mixin class _$FilmPreviewDataCopyWith<$Res> implements $FilmPreviewData
   factory _$FilmPreviewDataCopyWith(_FilmPreviewData value, $Res Function(_FilmPreviewData) _then) = __$FilmPreviewDataCopyWithImpl;
 @override @useResult
 $Res call({
- int kinopoiskId, String? nameRu, String posterUrl, double ratingKinopoisk
+ int kinopoiskId, String? nameRu, String posterUrl, double? ratingKinopoisk
 });
 
 
@@ -270,13 +270,13 @@ class __$FilmPreviewDataCopyWithImpl<$Res>
 
 /// Create a copy of FilmPreviewData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? kinopoiskId = null,Object? nameRu = freezed,Object? posterUrl = null,Object? ratingKinopoisk = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? kinopoiskId = null,Object? nameRu = freezed,Object? posterUrl = null,Object? ratingKinopoisk = freezed,}) {
   return _then(_FilmPreviewData(
 kinopoiskId: null == kinopoiskId ? _self.kinopoiskId : kinopoiskId // ignore: cast_nullable_to_non_nullable
 as int,nameRu: freezed == nameRu ? _self.nameRu : nameRu // ignore: cast_nullable_to_non_nullable
 as String?,posterUrl: null == posterUrl ? _self.posterUrl : posterUrl // ignore: cast_nullable_to_non_nullable
-as String,ratingKinopoisk: null == ratingKinopoisk ? _self.ratingKinopoisk : ratingKinopoisk // ignore: cast_nullable_to_non_nullable
-as double,
+as String,ratingKinopoisk: freezed == ratingKinopoisk ? _self.ratingKinopoisk : ratingKinopoisk // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 

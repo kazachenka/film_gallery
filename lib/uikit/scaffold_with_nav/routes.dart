@@ -56,6 +56,16 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/search',
               builder: (context, state) => const SearchFilmsScreen(),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  builder: (context, state) {
+                    final filmId = state.pathParameters['id'];
+
+                    return FilmDetailsScreen(filmId: int.parse(filmId!));
+                  },
+                )
+              ]
             ),
           ],
         ),

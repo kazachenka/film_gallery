@@ -17,28 +17,43 @@ class PopularFilmsScreen extends StatefulWidget {
 
 class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
   final PopularFilmsApiProvider popularFilmsApi = sl<PopularFilmsApiProvider>();
+  final ScrollController _scrollController = ScrollController();
 
+  int _page = 1;
+  int _totalPages = 1;
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   String? _errorMessage;
   List<FilmPreviewData> _films = [];
   late FilmsData _data;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(_onScroll);
+    _loadPopularFilms();
+  }
 
   Future<void> _loadPopularFilms() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
+      _page = 1;
     });
 
     try {
-      _data = await popularFilmsApi.getPopularFilms(1);
+      _data = await popularFilmsApi.getPopularFilms(_page);
 
       setState(() {
         _films = _data.items;
+        _totalPages = _data.totalPages;
         _isLoading = false;
         _errorMessage = null;
       });
     } catch (e) {
       print('error: $e');
+
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;
@@ -46,11 +61,30 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _loadMorePopularFilms() async {
+    if (_page + 1 > _totalPages) {
+      return;
+    }
 
-    _loadPopularFilms();
+    setState(() {
+      _errorMessage = null;
+      _isLoadingMore = true;
+      _page = _page + 1;
+    });
+
+    try {
+      _data = await popularFilmsApi.getPopularFilms(_page);
+
+      setState(() {
+        _films = _films + _data.items;
+        _errorMessage = null;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      print('error: $e');
+
+      _isLoadingMore = false;
+    }
   }
 
   void openFilmDetails(int filmId) {
@@ -99,6 +133,7 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
           right: 10
       ),
       child: GridView.count(
+        controller: _scrollController,
         crossAxisCount: 2,
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
@@ -109,6 +144,15 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
         ],
       ),
     );
+  }
+
+  void _onScroll() {
+    double maxScrollValue = _scrollController.position.maxScrollExtent;
+    double currentScrollValue = _scrollController.position.pixels;
+
+    if (maxScrollValue - currentScrollValue <= 200.0 && !_isLoadingMore) {
+      _loadMorePopularFilms();
+    }
   }
 
   @override
@@ -125,5 +169,12 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
         }
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+
+    super.dispose();
   }
 }

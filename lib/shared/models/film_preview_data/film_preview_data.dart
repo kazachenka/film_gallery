@@ -9,7 +9,7 @@ abstract class FilmPreviewData with _$FilmPreviewData {
     required int kinopoiskId,
     required String? nameRu,
     required String posterUrl,
-    required double ratingKinopoisk,
+    required double? ratingKinopoisk,
   }) = _FilmPreviewData;
 
   factory FilmPreviewData.fromJson(Map<String, dynamic> json) =>
