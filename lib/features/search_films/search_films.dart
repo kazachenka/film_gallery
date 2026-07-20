@@ -126,17 +126,37 @@ class _SearchFilmsScreenState extends State<SearchFilmsScreen> {
         left: 10,
         right: 10
       ),
-      child: GridView.count(
-        controller: _scrollController,
-        crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-        childAspectRatio: 0.78,
+      child: Stack(
         children: [
-          for (var film in _films)
-            FilmCard(film: film, onTap: openFilmDetails)
+          GridView.count(
+            controller: _scrollController,
+            crossAxisCount: 2,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+            childAspectRatio: 0.78,
+            children: [
+              for (var film in _films)
+                FilmCard(film: film, onTap: openFilmDetails)
+            ],
+          ),
+
+          if (_isLoadingMore)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 16,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ),
+            )
         ],
-      ),
+      )
     );
   }
 
@@ -210,7 +230,9 @@ class _SearchFilmsScreenState extends State<SearchFilmsScreen> {
     } catch (e) {
       print('error: $e');
 
-      _isLoadingMore = false;
+      setState(() {
+        _isLoadingMore = false;
+      });
     }
   }
 

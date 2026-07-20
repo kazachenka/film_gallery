@@ -24,6 +24,12 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
   bool _isFavorite = false;
   String? _errorMessage;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadFilmDetails();
+  }
+
   Future<void> _loadFilmDetails() async {
     setState(() {
       _isLoading = true;
@@ -49,13 +55,6 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    _loadFilmDetails();
-  }
-
   Future<void> _toggleFavorite() async {
     try {
       if (_isFavorite) {
@@ -67,16 +66,30 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
           posterUrl: _filmData.posterUrl,
           ratingKinopoisk: _filmData.ratingKinopoisk,
         );
-
         await favoriteFilmsApi.addToFavorites(filmData);
       }
-
       setState(() {
         _isFavorite = !_isFavorite;
       });
     } catch (e) {
       print('error: $e');
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      ),
+      body: Hero(
+        tag: 'film_poster_${widget.filmId}',
+        child: Material(
+          type: MaterialType.transparency,
+          child: _buildBody(),
+        ),
+      ),
+    );
   }
 
   Widget _buildBody() {
@@ -117,6 +130,7 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
         right: 10
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
             height: 10,
@@ -134,21 +148,17 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
           const SizedBox(
             height: 15,
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              _filmData.nameRu,
-              style: Theme.of(context).textTheme.headlineMedium,
-              maxLines: 1,
-            ),
+          Text(
+            _filmData.nameRu,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(
             height: 5,
           ),
           if (_filmData.slogan != null)
             Text(
-              '\"${_filmData.slogan!}\"',
-              style: Theme.of(context).textTheme.bodySmall,
+              '"${_filmData.slogan!}"',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
             ),
           const SizedBox(
             height: 10,
@@ -208,17 +218,7 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
             height: 15,
           ),
         ],
-      )
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      body: _buildBody(),
     );
   }
 }
