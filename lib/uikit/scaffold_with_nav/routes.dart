@@ -7,6 +7,8 @@ import 'package:film_gallery/features/search_films/search_films.dart';
 import 'package:film_gallery/features/film_details/film_details.dart';
 import 'package:film_gallery/uikit/scaffold_with_nav/scaffold_with_nav.dart';
 
+import '../../shared/models/film_preview_data/film_preview_data.dart';
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/popular',
   routes: [
@@ -25,8 +27,9 @@ final GoRouter appRouter = GoRouter(
                   path: ':id',
                     builder: (context, state) {
                     final filmId = state.pathParameters['id'];
+                    final filmData = state.extra as FilmPreviewData;
 
-                    return FilmDetailsScreen(filmId: int.parse(filmId!));
+                    return FilmDetailsScreen(filmId: int.parse(filmId!), filmData: filmData,);
                   },
                 )
               ]
@@ -43,8 +46,9 @@ final GoRouter appRouter = GoRouter(
                   path: ':id',
                   builder: (context, state) {
                     final filmId = state.pathParameters['id'];
+                    final filmData = state.extra as FilmPreviewData;
 
-                    return FilmDetailsScreen(filmId: int.parse(filmId!));
+                    return FilmDetailsScreen(filmId: int.parse(filmId!), filmData: filmData,);
                   },
                 )
               ]
@@ -61,8 +65,9 @@ final GoRouter appRouter = GoRouter(
                   path: ':id',
                   builder: (context, state) {
                     final filmId = state.pathParameters['id'];
+                    final filmData = state.extra as FilmPreviewData;
 
-                    return FilmDetailsScreen(filmId: int.parse(filmId!));
+                    return FilmDetailsScreen(filmId: int.parse(filmId!), filmData: filmData,);
                   },
                 )
               ]

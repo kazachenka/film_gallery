@@ -90,8 +90,11 @@ class _PopularFilmsScreenState extends State<PopularFilmsScreen> {
     }
   }
 
-  void openFilmDetails(int filmId) {
-    context.push('popular/${filmId}');
+  void openFilmDetails(FilmPreviewData filmData) {
+    context.push(
+      'popular/${filmData.kinopoiskId}',
+      extra: filmData,
+    );
   }
 
   Widget _buildBody() {

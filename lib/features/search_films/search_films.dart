@@ -236,8 +236,11 @@ class _SearchFilmsScreenState extends State<SearchFilmsScreen> {
     }
   }
 
-  void openFilmDetails(int filmId) {
-    context.push('search/${filmId}');
+  void openFilmDetails(FilmPreviewData filmData) {
+    context.push(
+      'search/${filmData.kinopoiskId}',
+      extra: filmData,
+    );
   }
 
   void _onScroll() {

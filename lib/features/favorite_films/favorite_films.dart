@@ -47,8 +47,11 @@ class _FavoriteFilmsScreenState extends State<FavoriteFilmsScreen> {
     }
   }
 
-  void openFilmDetails(int filmId) {
-    context.push('favorite/${filmId}');
+  void openFilmDetails(FilmPreviewData filmData) {
+    context.push(
+      'favorite/${filmData.kinopoiskId}',
+      extra: filmData,
+    );
   }
 
   @override

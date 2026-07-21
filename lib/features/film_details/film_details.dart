@@ -1,3 +1,4 @@
+import 'package:film_gallery/features/film_details/widgets/film_details_shimmer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:film_gallery/injection/injection.dart';
@@ -7,9 +8,10 @@ import 'api/film_details_api.dart';
 import 'models/film_details/film_details.dart';
 
 class FilmDetailsScreen extends StatefulWidget {
-  const FilmDetailsScreen({super.key, required this.filmId});
+  const FilmDetailsScreen({super.key, required this.filmId, required this.filmData});
 
   final int filmId;
+  final FilmPreviewData filmData;
 
   @override
   State<StatefulWidget> createState() => _FilmDetailsScreenState();
@@ -19,7 +21,7 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
   final FilmDetailsApiProvider popularFilmsApi = sl<FilmDetailsApiProvider>();
   final FavoriteFilmsService favoriteFilmsApi = sl<FavoriteFilmsService>();
 
-  late FilmDetails _filmData;
+  FilmDetails? _filmData;
   bool _isLoading = true;
   bool _isFavorite = false;
   String? _errorMessage;
@@ -62,9 +64,9 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
       } else {
         final filmData = FilmPreviewData(
           kinopoiskId: widget.filmId,
-          nameRu: _filmData.nameRu,
-          posterUrl: _filmData.posterUrl,
-          ratingKinopoisk: _filmData.ratingKinopoisk,
+          nameRu: _filmData?.nameRu,
+          posterUrl: _filmData!.posterUrl,
+          ratingKinopoisk: _filmData?.ratingKinopoisk,
         );
         await favoriteFilmsApi.addToFavorites(filmData);
       }
@@ -82,23 +84,94 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      body: Hero(
-        tag: 'film_poster_${widget.filmId}',
-        child: Material(
-          type: MaterialType.transparency,
-          child: _buildBody(),
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildFilmDescription() {
+    if(_isLoading) {
+      return FilmDetailsShimmer();
+    }
+
+    return Column(
+      children: [
+        const SizedBox(
+          height: 15,
         ),
-      ),
+        Text(
+          _filmData!.nameRu,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        if (_filmData?.slogan != null)
+          Text(
+            '"${_filmData?.slogan}"',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+          ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Theme.of(context).appBarTheme.backgroundColor,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '${_filmData!.ratingKinopoisk}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              _filmData!.year.toString(),
+            ),
+            SizedBox(width: 10),
+            for (var countryData in _filmData!.countries ?? [])
+              Text(
+                '${countryData.country} ',
+              ),
+
+
+            for (var genreData in _filmData!.genre ?? [])
+              Text(
+                '${genreData.genre} ',
+              ),
+          ],
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        if (_filmData?.description != null)
+          Text(
+            _filmData!.description!,
+          ),
+
+        const SizedBox(
+          height: 15,
+        ),
+
+        FilledButton.icon(
+          onPressed: _toggleFavorite,
+          icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
+          label: Text(_isFavorite ? 'Remove from favorites' : 'Add to favorite'),
+        ),
+
+        const SizedBox(
+          height: 15,
+        ),
+      ],
     );
   }
 
   Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
     if (_errorMessage != null) {
       return Center(
         child: Column(
@@ -135,88 +208,20 @@ class _FilmDetailsScreenState extends State<FilmDetailsScreen> {
           const SizedBox(
             height: 10,
           ),
-          Image.network(
-            _filmData.posterUrl,
-            width: double.infinity,
-            errorBuilder: (context, error, stackTrace) {
-              return Image.asset(
-                'assets/images/film.jpg',
-                width: double.infinity,
-              );
-            },
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Text(
-            _filmData.nameRu,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          if (_filmData.slogan != null)
-            Text(
-              '"${_filmData.slogan!}"',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+          Hero(
+            tag: 'film_poster_${_filmData?.kinopoiskId ?? widget.filmData.kinopoiskId}',
+            child: Image.network(
+              _filmData?.posterUrl ?? widget.filmData.posterUrl,
+              width: double.infinity,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  'assets/images/film.jpg',
+                  width: double.infinity,
+                );
+              },
             ),
-          const SizedBox(
-            height: 10,
           ),
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).appBarTheme.backgroundColor,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${_filmData.ratingKinopoisk}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Text(
-                _filmData.year.toString(),
-              ),
-              SizedBox(width: 10),
-              for (var countryData in _filmData.countries ?? [])
-                Text(
-                  '${countryData.country} ',
-                ),
-
-
-              for (var genreData in _filmData.genre ?? [])
-                Text(
-                  '${genreData.genre} ',
-                ),
-            ],
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          if (_filmData.description != null)
-            Text(
-              _filmData.description!,
-            ),
-
-          const SizedBox(
-            height: 15,
-          ),
-
-          FilledButton.icon(
-            onPressed: _toggleFavorite,
-            icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
-            label: Text(_isFavorite ? 'Remove from favorites' : 'Add to favorite'),
-          ),
-
-          const SizedBox(
-            height: 15,
-          ),
+          _buildFilmDescription(),
         ],
       ),
     );
